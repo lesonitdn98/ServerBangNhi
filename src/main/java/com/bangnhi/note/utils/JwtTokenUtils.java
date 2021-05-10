@@ -1,29 +1,37 @@
-package com.bangnhi.server.jwt;
+package com.bangnhi.note.utils;
 
+import com.bangnhi.note.data.model.User;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
-@Component
 @Slf4j
-public class JwtTokenProvider {
-    private final String JWT_SECRET = "bangnhi";
+public class JwtTokenUtils {
+    private static final String JWT_SECRET = "bangnhi";
 
-    public String generateToken(CustomUserDetails userDetails) {
+    public static String getJwtFromRequest(String bearerToken) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+
+    public static String generateToken(User userDetails) {
         Date now = new Date();
         long JWT_EXPIRATION = 604800000L;
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
         return Jwts.builder()
-                .setSubject(Long.toString(userDetails.getUser().getId()))
+                .setSubject(Long.toString(userDetails.getId()))
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
                 .compact();
     }
 
-    public Long getUserIdFromJWT(String token) {
+    public static Long getUserIdFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(JWT_SECRET)
                 .parseClaimsJws(token)
@@ -32,7 +40,7 @@ public class JwtTokenProvider {
         return Long.parseLong(claims.getSubject());
     }
 
-    public boolean validateToken(String authToken) {
+    public static boolean validateToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(authToken);
             return true;

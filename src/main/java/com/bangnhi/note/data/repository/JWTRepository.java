@@ -1,9 +1,10 @@
-package com.bangnhi.server.repository;
+package com.bangnhi.note.data.repository;
 
-import com.bangnhi.server.model.JWT;
+import com.bangnhi.note.data.model.JWT;
 import org.springframework.data.repository.CrudRepository;
 
 public interface JWTRepository extends CrudRepository<JWT, Integer> {
     JWT findByToken(String token);
+
     void deleteByToken(String token);
 }

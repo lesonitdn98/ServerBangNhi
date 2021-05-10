@@ -1,6 +1,6 @@
-package com.bangnhi.server.repository;
+package com.bangnhi.note.data.repository;
 
-import com.bangnhi.server.model.User;
+import com.bangnhi.note.data.model.User;
 import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends CrudRepository<User, Integer> {

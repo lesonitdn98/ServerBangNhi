@@ -1,4 +1,4 @@
-package com.bangnhi.server.model;
+package com.bangnhi.note.data.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -13,7 +13,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String fullName;
     private String username;
     @JsonIgnore
     private String password;
@@ -23,8 +23,8 @@ public class User {
     public User() {
     }
 
-    public User(String name, String username, String password, String email, boolean enable) {
-        this.name = name;
+    public User(String fullName, String username, String password, String email, boolean enable) {
+        this.fullName = fullName;
         this.username = username;
         this.password = password;
         this.email = email;
@@ -32,12 +32,12 @@ public class User {
     }
 
 
-    public String getName() {
-        return name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFullName(String name) {
+        this.fullName = name;
     }
 
     public Long getId() {

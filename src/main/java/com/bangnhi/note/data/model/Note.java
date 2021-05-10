@@ -1,4 +1,4 @@
-package com.bangnhi.server.model;
+package com.bangnhi.note.data.model;
 
 import javax.persistence.*;
 

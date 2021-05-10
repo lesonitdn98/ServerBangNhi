@@ -1,10 +1,10 @@
-package com.bangnhi.server;
+package com.bangnhi.note;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ServerApplicationTests {
+class NoteApplicationTests {
 
     @Test
     void contextLoads() {
