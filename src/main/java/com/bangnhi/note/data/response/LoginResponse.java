@@ -7,16 +7,10 @@ import lombok.Data;
 public class LoginResponse {
     private String accessToken;
     private String tokenType = "Bearer";
-    private String fullName;
-    private String username;
-    private String email;
-    private boolean enable;
+    private User user;
 
     public LoginResponse(String accessToken, User user) {
         this.accessToken = accessToken;
-        this.fullName = user.getFullName();
-        this.username = user.getUsername();
-        this.email = user.getEmail();
-        this.enable = user.isEnable();
+        this.user = user;
     }
 }

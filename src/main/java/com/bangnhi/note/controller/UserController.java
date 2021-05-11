@@ -30,12 +30,12 @@ public class UserController {
         HttpStatus status;
         String token = JwtTokenUtils.getJwtFromRequest(auth);
         if (!AppUtils.validateAuthToken(token, jwtRepository)) {
-            responseBody = new BaseResponse<>(false, "Unauthorized");
             status = HttpStatus.UNAUTHORIZED;
+            responseBody = new BaseResponse<>(false, "Unauthorized", status.value());
         } else {
             Iterable<User> users = userRepository.findAll();
-            responseBody = new BaseResponse<>(true, "", users);
             status = HttpStatus.OK;
+            responseBody = new BaseResponse<>(true, "", users, status.value());
         }
         return new ResponseEntity<>(responseBody, status);
     }

@@ -43,11 +43,11 @@ public class NoteController {
         HttpStatus status;
         String token = JwtTokenUtils.getJwtFromRequest(auth);
         if (AppUtils.validateAuthToken(token, jwtRepository)) {
-            responseBody = new BaseResponse<>(true, "", noteRepository.findAll());
             status = HttpStatus.OK;
+            responseBody = new BaseResponse<>(true, "", noteRepository.findAll(), status.value());
         } else {
-            responseBody = new BaseResponse<>(false, "Unauthorized");
             status = HttpStatus.UNAUTHORIZED;
+            responseBody = new BaseResponse<>(false, "Unauthorized", status.value());
         }
         return new ResponseEntity<>(responseBody, status);
     }
@@ -62,11 +62,11 @@ public class NoteController {
         HttpStatus status;
         String token = JwtTokenUtils.getJwtFromRequest(auth);
         if (!AppUtils.validateAuthToken(token, jwtRepository)) {
-            responseBody = new BaseResponse<>(false, "Unauthorized");
             status = HttpStatus.UNAUTHORIZED;
+            responseBody = new BaseResponse<>(false, "Unauthorized", status.value());
         } else if (title.isEmpty()) {
-            responseBody = new BaseResponse<>(false, "Title is Empty!");
             status = HttpStatus.BAD_REQUEST;
+            responseBody = new BaseResponse<>(false, "Title is Empty!", status.value());
         } else {
             Long id = JwtTokenUtils.getUserIdFromJWT(token);
             Note newNote = new Note(
@@ -77,8 +77,8 @@ public class NoteController {
             );
             noteRepository.save(newNote);
 
-            responseBody = new BaseResponse<>(true, "Add Note Success");
             status = HttpStatus.OK;
+            responseBody = new BaseResponse<>(true, "Add Note Success", status.value());
         }
         return new ResponseEntity<>(responseBody, status);
     }
@@ -93,16 +93,16 @@ public class NoteController {
         HttpStatus status;
         String token = JwtTokenUtils.getJwtFromRequest(auth);
         if (!AppUtils.validateAuthToken(token, jwtRepository)) {
-            responseBody = new BaseResponse<>(false, "Unauthorized");
             status = HttpStatus.UNAUTHORIZED;
+            responseBody = new BaseResponse<>(false, "Unauthorized", status.value());
         } else {
             Note note = noteRepository.findNoteById(noteId);
             if (note == null) {
-                responseBody = new BaseResponse<>(true, "");
                 status = HttpStatus.NOT_FOUND;
+                responseBody = new BaseResponse<>(true, "", status.value());
             } else {
-                responseBody = new BaseResponse<>(true, "", note);
                 status = HttpStatus.OK;
+                responseBody = new BaseResponse<>(true, "", note, status.value());
             }
         }
         return new ResponseEntity<>(responseBody, status);
@@ -119,23 +119,23 @@ public class NoteController {
         HttpStatus status;
         String token = JwtTokenUtils.getJwtFromRequest(auth);
         if (!AppUtils.validateAuthToken(token, jwtRepository)) {
-            responseBody = new BaseResponse<>(false, "Unauthorized");
             status = HttpStatus.UNAUTHORIZED;
+            responseBody = new BaseResponse<>(false, "Unauthorized", status.value());
         } else if (title.isEmpty()) {
-            responseBody = new BaseResponse<>(false, "Title is Empty!");
             status = HttpStatus.BAD_REQUEST;
+            responseBody = new BaseResponse<>(false, "Title is Empty!", status.value());
         } else {
             Note note = noteRepository.findNoteById(noteId);
             Long userId = JwtTokenUtils.getUserIdFromJWT(token);
             if (!note.getUser().getId().equals(userRepository.findById(userId).getId())) {
-                responseBody = new BaseResponse<>(false, "Edit Failed!");
                 status = HttpStatus.FORBIDDEN;
+                responseBody = new BaseResponse<>(false, "Edit Failed!", status.value());
             } else {
                 note.setTitle(title);
                 note.setDescription(description);
                 noteRepository.save(note);
-                responseBody = new BaseResponse<>(true, "Edit Success!", noteRepository.findNoteById(noteId));
                 status = HttpStatus.OK;
+                responseBody = new BaseResponse<>(true, "Edit Success!", noteRepository.findNoteById(noteId), status.value());
             }
         }
         return new ResponseEntity<>(responseBody, status);
@@ -151,18 +151,18 @@ public class NoteController {
         HttpStatus status;
         String token = JwtTokenUtils.getJwtFromRequest(auth);
         if (!AppUtils.validateAuthToken(token, jwtRepository)) {
-            responseBody = new BaseResponse<>(false, "Unauthorized");
             status = HttpStatus.UNAUTHORIZED;
+            responseBody = new BaseResponse<>(false, "Unauthorized", status.value());
         } else {
             Note note = noteRepository.findNoteById(noteId);
             Long userId = JwtTokenUtils.getUserIdFromJWT(token);
             if (!note.getUser().getId().equals(userRepository.findById(userId).getId())) {
-                responseBody = new BaseResponse<>(false, "Remove Failed!");
                 status = HttpStatus.FORBIDDEN;
+                responseBody = new BaseResponse<>(false, "Remove Failed!", status.value());
             } else {
                 noteRepository.deleteNoteById(noteId);
-                responseBody = new BaseResponse<>(true, "Remove Success!", noteRepository.findNoteById(noteId));
                 status = HttpStatus.OK;
+                responseBody = new BaseResponse<>(true, "Remove Success!", noteRepository.findNoteById(noteId), status.value());
             }
         }
         return new ResponseEntity<>(responseBody, status);
@@ -178,16 +178,16 @@ public class NoteController {
         HttpStatus status;
         String token = JwtTokenUtils.getJwtFromRequest(auth);
         if (!AppUtils.validateAuthToken(token, jwtRepository)) {
-            responseBody = new BaseResponse<>(false, "Unauthorized");
             status = HttpStatus.UNAUTHORIZED;
+            responseBody = new BaseResponse<>(false, "Unauthorized", status.value());
         } else if (keyword.trim().isEmpty()) {
             List<Note> notes = (List<Note>) noteRepository.findAll();
-            responseBody = new BaseResponse<>(true, notes.size() + " results", notes);
             status = HttpStatus.OK;
+            responseBody = new BaseResponse<>(true, notes.size() + " results", notes, status.value());
         } else {
             List<Note> notes = noteRepository.search(keyword.toLowerCase().trim());
-            responseBody = new BaseResponse<>(true, notes.size() + " results", notes);
             status = HttpStatus.OK;
+            responseBody = new BaseResponse<>(true, notes.size() + " results", notes, status.value());
 
         }
         return new ResponseEntity<>(responseBody, status);
@@ -203,17 +203,17 @@ public class NoteController {
         HttpStatus status;
         String token = JwtTokenUtils.getJwtFromRequest(auth);
         if (!AppUtils.validateAuthToken(token, jwtRepository)) {
-            responseBody = new BaseResponse<>(false, "Unauthorized");
             status = HttpStatus.UNAUTHORIZED;
+            responseBody = new BaseResponse<>(false, "Unauthorized", status.value());
         } else {
             User user = userRepository.findById(userId);
             if (user == null) {
-                responseBody = new BaseResponse<>(false, "User does not exist!");
                 status = HttpStatus.NOT_FOUND;
+                responseBody = new BaseResponse<>(false, "User does not exist!", status.value());
             } else {
                 List<Note> notes = noteRepository.findAllByUser(user);
-                responseBody = new BaseResponse<>(true, notes.size() + " results", notes);
                 status = HttpStatus.OK;
+                responseBody = new BaseResponse<>(true, notes.size() + " results", notes, status.value());
             }
         }
         return new ResponseEntity<>(responseBody, status);
@@ -230,17 +230,17 @@ public class NoteController {
         HttpStatus status;
         String token = JwtTokenUtils.getJwtFromRequest(auth);
         if (!AppUtils.validateAuthToken(token, jwtRepository)) {
-            responseBody = new BaseResponse<>(false, "Unauthorized");
             status = HttpStatus.UNAUTHORIZED;
+            responseBody = new BaseResponse<>(false, "Unauthorized", status.value());
         } else {
             User user = userRepository.findById(userId);
             if (user == null) {
-                responseBody = new BaseResponse<>(false, "User does not exist!");
                 status = HttpStatus.NOT_FOUND;
+                responseBody = new BaseResponse<>(false, "User does not exist!", status.value());
             } else {
                 List<Note> notes = noteRepository.searchInMyNotes(user, keyword.toLowerCase().trim());
-                responseBody = new BaseResponse<>(true, notes.size() + " results", notes);
                 status = HttpStatus.OK;
+                responseBody = new BaseResponse<>(true, notes.size() + " results", notes, status.value());
             }
         }
         return new ResponseEntity<>(responseBody, status);

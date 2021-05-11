@@ -35,28 +35,28 @@ public class AuthController {
         BaseResponse<Object> responseBody;
         HttpStatus status;
         if (username.isEmpty()) {
-            responseBody = new BaseResponse<>(false, "Username is Empty!");
             status = HttpStatus.BAD_REQUEST;
+            responseBody = new BaseResponse<>(false, "Username is Empty!", status.value());
         } else if (password.isEmpty()) {
-            responseBody = new BaseResponse<>(false, "Password is Empty!");
             status = HttpStatus.BAD_REQUEST;
+            responseBody = new BaseResponse<>(false, "Password is Empty!", status.value());
         } else if (name.isEmpty()) {
-            responseBody = new BaseResponse<>(false, "Name is Empty!");
             status = HttpStatus.BAD_REQUEST;
+            responseBody = new BaseResponse<>(false, "Name is Empty!", status.value());
         } else if (email.isEmpty()) {
-            responseBody = new BaseResponse<>(false, "Email is Empty!");
             status = HttpStatus.BAD_REQUEST;
+            responseBody = new BaseResponse<>(false, "Email is Empty!", status.value());
         } else if (userRepository.findByUsername(username) != null) {
-            responseBody = new BaseResponse<>(false, "User already exists!");
             status = HttpStatus.CONFLICT;
+            responseBody = new BaseResponse<>(false, "User already exists!", status.value());
         } else if (userRepository.findByEmail(email) != null) {
-            responseBody = new BaseResponse<>(false, "Email already exists!");
             status = HttpStatus.CONFLICT;
+            responseBody = new BaseResponse<>(false, "Email already exists!", status.value());
         } else {
             User newUser = new User(name, username, AppUtils.getMD5(password), email, false);
             userRepository.save(newUser);
-            responseBody = new BaseResponse<>(true, "Register success");
             status = HttpStatus.OK;
+            responseBody = new BaseResponse<>(true, "Register success", status.value());
         }
         return new ResponseEntity<>(responseBody, null, status);
     }
@@ -68,24 +68,24 @@ public class AuthController {
         HttpStatus status;
         User user = userRepository.findByUsername(username);
         if (username.isEmpty()) {
-            responseBody = new BaseResponse<>(false, "Username is Empty!");
             status = HttpStatus.BAD_REQUEST;
+            responseBody = new BaseResponse<>(false, "Username is Empty!", status.value());
         } else if (password.isEmpty()) {
-            responseBody = new BaseResponse<>(false, "Password is Empty!");
             status = HttpStatus.BAD_REQUEST;
+            responseBody = new BaseResponse<>(false, "Password is Empty!", status.value());
         } else if (user == null) {
-            responseBody = new BaseResponse<>(false, "Username does not exist!");
             status = HttpStatus.NOT_FOUND;
+            responseBody = new BaseResponse<>(false, "Username does not exist!", status.value());
         } else {
             if (!user.getPassword().equals(AppUtils.getMD5(password))) {
-                responseBody = new BaseResponse<>(false, "Password is incorrect!");
                 status = HttpStatus.BAD_REQUEST;
+                responseBody = new BaseResponse<>(false, "Password is incorrect!", status.value());
             } else {
                 String jwt = JwtTokenUtils.generateToken(user);
                 JWT token = new JWT(jwt);
                 jwtRepository.save(token);
-                responseBody = new BaseResponse<>(true, "Login success", new LoginResponse(jwt, user));
                 status = HttpStatus.OK;
+                responseBody = new BaseResponse<>(true, "Login success", new LoginResponse(jwt, user), status.value());
             }
         }
         return new ResponseEntity<>(responseBody, null, status);
@@ -99,11 +99,11 @@ public class AuthController {
         String token = JwtTokenUtils.getJwtFromRequest(auth);
         if (AppUtils.validateAuthToken(token, jwtRepository)) {
             jwtRepository.deleteByToken(token);
-            responseBody = new BaseResponse<>(true, "Logout Success");
             status = HttpStatus.OK;
+            responseBody = new BaseResponse<>(true, "Logout Success", status.value());
         } else {
-            responseBody = new BaseResponse<>(false, "Logout Failed!");
             status = HttpStatus.UNAUTHORIZED;
+            responseBody = new BaseResponse<>(false, "Logout Failed!", status.value());
         }
         return new ResponseEntity<>(responseBody, status);
     }
