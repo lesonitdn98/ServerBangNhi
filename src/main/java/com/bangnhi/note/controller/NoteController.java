@@ -83,7 +83,7 @@ public class NoteController {
         return new ResponseEntity<>(responseBody, status);
     }
 
-    @GetMapping("/note/{noteId}")
+    @GetMapping("/{noteId}")
     public @ResponseBody
     ResponseEntity<BaseResponse<Note>> getNote(
             @RequestHeader("Authorization") String auth,
@@ -193,7 +193,7 @@ public class NoteController {
         return new ResponseEntity<>(responseBody, status);
     }
 
-    @GetMapping("/users/{userId}")
+    @GetMapping("/{userId}")
     public @ResponseBody
     ResponseEntity<BaseResponse<List<Note>>> getNoteByUser(
             @RequestHeader("Authorization") String auth,
@@ -219,7 +219,7 @@ public class NoteController {
         return new ResponseEntity<>(responseBody, status);
     }
 
-    @GetMapping("/users/{userId}/search")
+    @GetMapping("/search/{userId}")
     public @ResponseBody
     ResponseEntity<BaseResponse<List<Note>>> searchNotes(
             @RequestHeader("Authorization") String auth,
