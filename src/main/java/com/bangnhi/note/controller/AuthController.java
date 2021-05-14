@@ -93,16 +93,19 @@ public class AuthController {
 
     @PostMapping("logout")
     @Transactional
-    public ResponseEntity<BaseResponse<Object>> logout(@RequestHeader("Authorization") String auth) {
+    public ResponseEntity<BaseResponse<Object>> logout(@RequestHeader(value = "Authorization", required = false) String auth) {
         BaseResponse<Object> responseBody;
         HttpStatus status;
-        String token = JwtTokenUtils.getJwtFromRequest(auth);
-        if (AppUtils.validateAuthToken(token, jwtRepository)) {
+        if (auth == null) {
+            status = HttpStatus.NOT_FOUND;
+            responseBody = new BaseResponse<>(false, null);
+        } else if (AppUtils.validateAuthToken(JwtTokenUtils.getJwtFromRequest(auth), jwtRepository)) {
+            String token = JwtTokenUtils.getJwtFromRequest(auth);
             jwtRepository.deleteByToken(token);
             status = HttpStatus.OK;
             responseBody = new BaseResponse<>(true, "Logout Success");
         } else {
-            status = HttpStatus.UNAUTHORIZED;
+            status = HttpStatus.NOT_FOUND;
             responseBody = new BaseResponse<>(false, "Logout Failed!");
         }
         return new ResponseEntity<>(responseBody, status);
