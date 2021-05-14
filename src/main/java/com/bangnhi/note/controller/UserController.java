@@ -23,7 +23,7 @@ public class UserController {
         this.jwtRepository = jwtRepository;
     }
 
-    @GetMapping("")
+    @GetMapping
     public @ResponseBody
     ResponseEntity<BaseResponse<Iterable<User>>> getAllUsers(@RequestHeader("Authorization") String auth) {
         BaseResponse<Iterable<User>> responseBody;
@@ -31,11 +31,11 @@ public class UserController {
         String token = JwtTokenUtils.getJwtFromRequest(auth);
         if (!AppUtils.validateAuthToken(token, jwtRepository)) {
             status = HttpStatus.UNAUTHORIZED;
-            responseBody = new BaseResponse<>(false, "Unauthorized", status.value());
+            responseBody = new BaseResponse<>(false, "Unauthorized");
         } else {
             Iterable<User> users = userRepository.findAll();
             status = HttpStatus.OK;
-            responseBody = new BaseResponse<>(true, "", users, status.value());
+            responseBody = new BaseResponse<>(true, "", users);
         }
         return new ResponseEntity<>(responseBody, status);
     }

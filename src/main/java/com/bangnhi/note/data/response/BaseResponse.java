@@ -7,18 +7,15 @@ public class BaseResponse<T> {
     Boolean ok;
     String message;
     T data = null;
-    int status;
 
-    public BaseResponse(Boolean ok, String message, int status) {
+    public BaseResponse(Boolean ok, String message) {
         this.ok = ok;
         this.message = message;
-        this.status = status;
     }
 
-    public BaseResponse(Boolean ok, String message, T data, int status) {
+    public BaseResponse(Boolean ok, String message, T data) {
         this.ok = ok;
         this.message = message;
         this.data = data;
-        this.status = status;
     }
 }
