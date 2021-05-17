@@ -87,11 +87,11 @@ public class NoteController {
         return new ResponseEntity<>(responseBody, status);
     }
 
-    @GetMapping("/{noteId}")
+    @GetMapping("/note")
     public @ResponseBody
     ResponseEntity<BaseResponse<Note>> getNote(
             @RequestHeader(value = "Authorization", required = false) String auth,
-            @PathVariable Long noteId
+            @RequestParam Long noteId
     ) {
         BaseResponse<Note> responseBody;
         HttpStatus status;
@@ -207,11 +207,11 @@ public class NoteController {
         return new ResponseEntity<>(responseBody, status);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/user")
     public @ResponseBody
     ResponseEntity<BaseResponse<List<Note>>> getNoteByUser(
             @RequestHeader(value = "Authorization", required = false) String auth,
-            @PathVariable Long userId
+            @RequestParam Long userId
     ) {
         BaseResponse<List<Note>> responseBody;
         HttpStatus status;
@@ -236,11 +236,11 @@ public class NoteController {
         return new ResponseEntity<>(responseBody, status);
     }
 
-    @GetMapping("/search/{userId}")
+    @GetMapping("/user/search")
     public @ResponseBody
     ResponseEntity<BaseResponse<List<Note>>> searchNotes(
             @RequestHeader(value = "Authorization", required = false) String auth,
-            @PathVariable Long userId,
+            @RequestParam Long userId,
             @RequestParam String keyword
     ) {
         BaseResponse<List<Note>> responseBody;
